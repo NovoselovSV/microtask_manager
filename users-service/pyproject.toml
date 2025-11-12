@@ -1,0 +1,22 @@
+[project]
+name = "users-service"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "novoselovsv",email = "novoselovsv@bk.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standart] (>=0.121.1,<0.122.0)",
+    "sqlalchemy (>=2.0.44,<3.0.0)",
+    "alembic (>=1.17.1,<2.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "users_service", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
