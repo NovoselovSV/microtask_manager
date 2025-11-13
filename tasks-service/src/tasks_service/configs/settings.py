@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DBSettings(BaseModel):
@@ -22,5 +22,4 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter='__')
 
     debug: bool = True
-    user_secret: str = 'SECRET'
     db: DBSettings = DBSettings()
