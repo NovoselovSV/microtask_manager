@@ -19,7 +19,8 @@ class DBSettings(BaseModel):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_nested_delimiter='__')
+    model_config = SettingsConfigDict(
+        env_nested_delimiter='__', env_prefix='USERS')
 
     debug: bool = True
     user_secret: str = 'SECRET'
