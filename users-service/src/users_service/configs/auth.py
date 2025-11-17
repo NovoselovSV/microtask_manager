@@ -1,13 +1,16 @@
+from typing import Any, Optional
 import uuid
 
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (AuthenticationBackend,
                                           BearerTransport, JWTStrategy)
 from fastapi_users.db import SQLAlchemyUserDatabase
 
 from data.users import User
+from data.users_schemas import UserRead
 from service.users import get_user_db
+from faststream_app import rabbit_broker
 
 from .settings import Settings
 
@@ -21,6 +24,17 @@ bearer_transport = BearerTransport(tokenUrl='users/auth/login')
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
+
+    async def on_after_update(
+        self,
+        user: User,
+        update_dict: dict[str, Any],
+        request: Optional[Request] = None,
+    ):
+        await rabbit_broker.publish(
+            UserRead.model_validate(user),
+            queue='update-user',
+        )
 
 
 def get_jwt_strategy() -> JWTStrategy:
