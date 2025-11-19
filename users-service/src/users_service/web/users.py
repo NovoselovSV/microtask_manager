@@ -4,7 +4,7 @@ from configs.auth import auth_backend, fastapi_users_project
 from data.users_schemas import UserCreate, UserRead, UserUpdate
 from .sse import router as sse_router
 
-router = APIRouter(prefix='/users')
+router = APIRouter()
 
 router.include_router(
     fastapi_users_project.get_auth_router(auth_backend), prefix='/auth'

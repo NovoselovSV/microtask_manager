@@ -4,4 +4,4 @@ from configs.settings import Settings
 
 settings = Settings()
 
-app = FastAPI(debug=settings.debug, root_path='/api/v1')
+app = FastAPI(debug=settings.debug, root_path='/tasks/v1')
