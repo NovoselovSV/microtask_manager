@@ -32,10 +32,21 @@ class RabbitSettings(BaseModel):
                 f'@{self.host}:{self.port}/')
 
 
+class UserServiceSettings(BaseModel):
+    host: str = 'user-service'
+    version: str = 'v1'
+
+    @property
+    def dsn(self):
+        return (f'http://{self.host}/users/'
+                f'{self.version}/')
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_nested_delimiter='__', env_prefix='TASKS')
 
     debug: bool = True
+    user_service: UserServiceSettings() = UserServiceSettings()
     db: DBSettings = DBSettings()
     rabbit: RabbitSettings = RabbitSettings()

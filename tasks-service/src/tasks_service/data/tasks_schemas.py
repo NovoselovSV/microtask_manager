@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class TaskSchema(BaseModel):
     id: int
+    description: str
     created_at: datetime
     done: bool | None
     done_dt: datetime | None

@@ -12,7 +12,8 @@ dependencies = [
     "sqlalchemy (>=2.0.44,<3.0.0)",
     "alembic (>=1.17.1,<2.0.0)",
     "pydantic-settings (>=2.12.0,<3.0.0)",
-    "asyncpg (>=0.30.0,<0.31.0)"
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "httpx (>=0.28.1,<0.29.0)"
 ]
 
 [tool.poetry]
@@ -21,3 +22,8 @@ packages = [{include = "tasks_service", from = "src"}]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "isort (>=7.0.0,<8.0.0)"
+]

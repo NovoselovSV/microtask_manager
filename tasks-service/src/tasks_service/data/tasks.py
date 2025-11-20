@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import BigInteger, DateTime
+from sqlalchemy import BigInteger, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -14,6 +14,7 @@ class Task(Base):
     __tablename__ = 'tasks'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    description: Mapped[str] = mapped_column(Text, default='')
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now)
     done: Mapped[Optional[bool]]
