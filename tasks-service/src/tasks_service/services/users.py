@@ -1,8 +1,9 @@
 import httpx
 import jwt
-from fastapi import Header, HTTPException
-
 from configs.settings import Settings
+from fastapi import Depends, Header, HTTPException, status
+
+from tasks_service.data.users_schemas import UserRead
 
 settings = Settings()
 
@@ -19,13 +20,19 @@ class UserService:
                 f'{settings.user_service.dsn}/me',
                 headers={'Authorization': f'Bearer {self.raw_token}'})
             response.raise_for_status()
-            return response.json()
+            return UserRead(**response.json())
 
     @classmethod
     def get_current_user(
             cls,
             authorization: str = Header(...)):
         return cls(authorization)
+
+    @staticmethod
+    async def get_user_info_before_logic(
+        user: 'UserService' = Depends(
+            get_current_user)):
+        return await user.get_info()
 
     @staticmethod
     def get_user_id_from_token(token: str):
@@ -35,12 +42,14 @@ class UserService:
             return user_id
 
         except IndexError:
-            raise HTTPException(status_code=400,
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail='Invalid Authorization header format')
         except jwt.DecodeError:
-            raise HTTPException(status_code=400, detail='Invalid JWT token')
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Invalid JWT token')
         except Exception as error:
             raise HTTPException(
-                status_code=500,
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f'Unexpected error: {
                     str(error)}')
