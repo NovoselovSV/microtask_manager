@@ -1,10 +1,10 @@
 from faststream_app import rabbit_broker
 
-from users_service.data.users_schemas import UserRead
+from users_service.data.users_schemas import UserReadSchema
 
-from .sse_managers import sse_manager
+from services.sse_managers import sse_manager
 
 
 @rabbit_broker.subscriber('update-user')
-async def handle_notification(user: UserRead) -> None:
+async def handle_notification(user: UserReadSchema) -> None:
     await sse_manager.broadcast(user.id, user)

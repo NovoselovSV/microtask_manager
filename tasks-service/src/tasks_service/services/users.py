@@ -3,7 +3,7 @@ import jwt
 from configs.settings import Settings
 from fastapi import Depends, Header, HTTPException, status
 
-from tasks_service.data.users_schemas import UserRead
+from tasks_service.data.users_schemas import UserReadSchema
 
 settings = Settings()
 
@@ -20,7 +20,7 @@ class UserService:
                 f'{settings.user_service.dsn}/me',
                 headers={'Authorization': f'Bearer {self.raw_token}'})
             response.raise_for_status()
-            return UserRead(**response.json())
+            return UserReadSchema(**response.json())
 
     @classmethod
     def get_current_user(

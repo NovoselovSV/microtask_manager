@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DBSettings(BaseModel):
     dialect: str = 'postgresql'
     driver: str = 'asyncpg'
-    name: str = 'notifications'
+    name: str = 'tasks'
     username: str = 'general_user'
     password: str = 'general_user_pass'
     host: str = 'localhost'
@@ -18,9 +18,24 @@ class DBSettings(BaseModel):
                 f'@{self.host}:{self.port}/{self.name}')
 
 
+class RabbitSettings(BaseModel):
+    driver: str = 'amqp'
+    username: str = 'guest'
+    password: str = 'guest'
+    host: str = 'localhost'
+    port: int = 5672
+
+    @property
+    def dsn(self):
+        return (f'{self.driver}://'
+                f'{self.username}:{self.password}'
+                f'@{self.host}:{self.port}/')
+
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_nested_delimiter='__')
+    model_config = SettingsConfigDict(
+        env_nested_delimiter='__', env_prefix='TASKS')
 
     debug: bool = True
-    user_secret: str = 'SECRET'
     db: DBSettings = DBSettings()
+    rabbit: RabbitSettings = RabbitSettings()

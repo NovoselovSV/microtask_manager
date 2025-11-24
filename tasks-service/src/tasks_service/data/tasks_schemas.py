@@ -4,12 +4,12 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class TaskBase(BaseModel):
+class TaskBaseSchema(BaseModel):
     description: str
     final_dt: datetime
 
 
-class TaskRead(TaskBase):
+class TaskReadSchema(TaskBaseSchema):
     id: int
     created_at: datetime
     done: bool
@@ -17,11 +17,11 @@ class TaskRead(TaskBase):
     creator_id: UUID
 
 
-class TaskCreate(TaskBase):
+class TaskCreateSchema(TaskBaseSchema):
     pass
 
 
-class TaskEdit(BaseModel):
+class TaskEditSchema(BaseModel):
     description: str | None
     final_dt: datetime | None
     done: bool | None

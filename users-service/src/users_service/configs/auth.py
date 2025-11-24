@@ -8,8 +8,8 @@ from fastapi_users.authentication import (AuthenticationBackend,
 from fastapi_users.db import SQLAlchemyUserDatabase
 
 from data.users import User
-from data.users_schemas import UserRead
-from service.users import get_user_db
+from data.users_schemas import UserReadSchema
+from services.users import get_user_db
 from faststream_app import rabbit_broker
 
 from .settings import Settings
@@ -32,7 +32,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         request: Optional[Request] = None,
     ):
         await rabbit_broker.publish(
-            UserRead.model_validate(user),
+            UserReadSchema.model_validate(user),
             queue='update-user',
         )
 

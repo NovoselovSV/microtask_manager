@@ -2,7 +2,7 @@ from asyncio import Queue
 from collections import defaultdict
 from uuid import UUID
 
-from users_service.data.users_schemas import UserRead
+from users_service.data.users_schemas import UserReadSchema
 
 
 class SSEManager:
@@ -24,7 +24,7 @@ class SSEManager:
         except ValueError:
             pass
 
-    async def broadcast(self, user_id: UUID, user: UserRead):
+    async def broadcast(self, user_id: UUID, user: UserReadSchema):
         if user_id not in self._queues:
             return
         for queue in self._queues[user_id][:]:
