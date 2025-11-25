@@ -8,8 +8,10 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi[standart] (>=0.121.1,<0.122.0)",
-    "faststream (>=0.6.3,<0.7.0)"
+    "faststream (>=0.6.3,<0.7.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+    "apscheduler (>=3.11.1,<4.0.0)",
+    "pydantic (>=2.12.4,<3.0.0)"
 ]
 
 [tool.poetry]

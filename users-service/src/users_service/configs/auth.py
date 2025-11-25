@@ -33,7 +33,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     ):
         await rabbit_broker.publish(
             UserReadSchema.model_validate(user),
-            queue='update-user',
+            queue='user.update',
         )
 
 
