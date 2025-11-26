@@ -3,8 +3,6 @@ from data.users_schemas import (UserCreateSchema, UserReadSchema,
                                 UserUpdateSchema)
 from fastapi import APIRouter
 
-from .sse import router as sse_router
-
 router = APIRouter()
 
 router.include_router(
@@ -23,4 +21,3 @@ router.include_router(
 router.include_router(
     fastapi_users_project.get_users_router(UserReadSchema, UserUpdateSchema),
 )
-router.include_router(sse_router)

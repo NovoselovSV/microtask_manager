@@ -7,10 +7,10 @@ from fastapi_users.authentication import (AuthenticationBackend,
                                           BearerTransport, JWTStrategy)
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from data.users import User
+from data import User
 from data.users_schemas import UserReadSchema
 from services.users import get_user_db
-from faststream_app import rabbit_broker
+from faststream_app import rabbit_router
 
 from .settings import Settings
 
@@ -18,7 +18,7 @@ settings = Settings()
 
 SECRET = settings.user_secret
 
-bearer_transport = BearerTransport(tokenUrl='users/auth/login')
+bearer_transport = BearerTransport(tokenUrl='users/v1/auth/login')
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
@@ -31,8 +31,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         update_dict: dict[str, Any],
         request: Optional[Request] = None,
     ):
-        await rabbit_broker.publish(
-            UserReadSchema.model_validate(user),
+        await rabbit_router.broker.publish(
+            UserReadSchema.model_validate(user).model_dump(),
             queue='user.update',
         )
 

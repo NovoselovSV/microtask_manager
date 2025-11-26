@@ -2,19 +2,19 @@ from asyncio import Queue
 from collections import defaultdict
 from uuid import UUID
 
-from users_service.data.users_schemas import UserReadSchema
+from data.users_schemas import UserReadSchema
 
 
 class SSEManager:
     def __init__(self):
         self._queues: dict[UUID, list[Queue]] = defaultdict(list)
 
-    async def subscribe(self, user_id: UUID) -> Queue:
+    def subscribe(self, user_id: UUID) -> Queue:
         queue = Queue()
         self._queues[user_id].append(queue)
         return queue
 
-    async def unsubscribe(self, user_id: UUID, queue: Queue):
+    def unsubscribe(self, user_id: UUID, queue: Queue):
         if user_id not in self._queues:
             return
         try:
@@ -29,7 +29,7 @@ class SSEManager:
             return
         for queue in self._queues[user_id][:]:
             try:
-                queue.put_nowait(user)
+                queue.put_nowait(user.model_dump(mode='json'))
             except Exception:
                 await self.unsubscribe(user_id, queue)
 

@@ -1,9 +1,7 @@
-from faststream import FastStream
-from faststream.rabbit.fastapi import RabbitBroker
+from faststream.rabbit.fastapi import RabbitRouter
 
 from configs.settings import Settings
 
 settings = Settings()
 
-rabbit_broker = RabbitBroker(settings.rabbit.dsn)
-faststream_app = FastStream(rabbit_broker)
+rabbit_router = RabbitRouter(settings.rabbit.dsn)
