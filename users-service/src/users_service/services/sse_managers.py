@@ -31,7 +31,7 @@ class SSEManager:
             try:
                 queue.put_nowait(user.model_dump(mode='json'))
             except Exception:
-                await self.unsubscribe(user_id, queue)
+                self.unsubscribe(user_id, queue)
 
 
 sse_manager = SSEManager()

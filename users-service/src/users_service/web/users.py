@@ -3,7 +3,7 @@ from data.users_schemas import (UserCreateSchema, UserReadSchema,
                                 UserUpdateSchema)
 from fastapi import APIRouter
 
-router = APIRouter()
+router = APIRouter(prefix='/v1')
 
 router.include_router(
     fastapi_users_project.get_auth_router(auth_backend), prefix='/auth'

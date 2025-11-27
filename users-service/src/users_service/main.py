@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     yield
     await rabbit_router.broker.close()
 
-app = FastAPI(debug=settings.debug, root_path='/users/v1', lifespan=lifespan)
+app = FastAPI(debug=settings.debug, root_path='/users', lifespan=lifespan)
 
 app.include_router(sse.router)
 app.include_router(users.router)

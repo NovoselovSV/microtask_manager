@@ -33,13 +33,13 @@ class RabbitSettings(BaseModel):
 
 
 class UserServiceSettings(BaseModel):
-    host: str = 'user-service'
+    host: str = 'localhost:8000'
     version: str = 'v1'
 
     @property
     def dsn(self):
         return (f'http://{self.host}/users/'
-                f'{self.version}/')
+                f'{self.version}')
 
 
 class Settings(BaseSettings):

@@ -8,6 +8,8 @@ class TaskBaseSchema(BaseModel):
     description: str
     final_dt: datetime
 
+    model_config = {'from_attributes': True}
+
 
 class TaskReadSchema(TaskBaseSchema):
     id: int
@@ -22,6 +24,6 @@ class TaskCreateSchema(TaskBaseSchema):
 
 
 class TaskEditSchema(BaseModel):
-    description: str | None
-    final_dt: datetime | None
-    done: bool | None
+    description: str | None = None
+    final_dt: datetime | None = None
+    done: bool | None = None

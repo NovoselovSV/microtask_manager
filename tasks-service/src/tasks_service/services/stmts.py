@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select, update
 
 from p_database.db import Base
-from tasks_service.data.tasks import Task
+from data.tasks import Task
 
 
 class Stmt:
@@ -23,6 +23,10 @@ class Stmt:
         self._stmt = select(self._model)
         return self
 
+    @property
+    def raw_stmt(self):
+        return self._stmt
+
 
 class TaskStmt(Stmt):
 
@@ -30,11 +34,11 @@ class TaskStmt(Stmt):
         super().__init__(Task)
 
     def limit_by_creator(self, user_id: UUID):
-        self.stmt = self.stmt.where(Task.creator_id == user_id)
+        self._stmt = self._stmt.where(Task.creator_id == user_id)
         return self
 
     def limit_by_id(self, id: int):
-        self.stmt = self.stmt.where(Task.id == id)
+        self._stmt = self._stmt.where(Task.id == id)
         return self
 
     def limit_to_one_for_user(self, id: int, user_id: UUID):

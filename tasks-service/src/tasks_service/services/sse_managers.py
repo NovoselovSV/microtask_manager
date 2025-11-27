@@ -1,32 +1,32 @@
 from asyncio import Queue
 from collections import defaultdict
-from uuid import UUID
 
 from data.tasks_schemas import TaskReadSchema
-from faststream_app import rabbit_broker
-from p_database import get_db
+from faststream_app import rabbit_router
+from p_database.db import get_db
 
 from .tasks import TaskService
 
 
 class SSEManager:
     def __init__(self):
-        self._queues: dict[UUID, list[Queue]] = defaultdict(list)
+        self._queues: dict[str, list[Queue]] = defaultdict(list)
 
-    async def send_user_tasks(self, user_id: UUID) -> None:
-        tasks = TaskService(await get_db()).get_all_for(user_id)
+    async def send_user_tasks(self, user_id: str) -> None:
+        tasks = await (TaskService(await anext(get_db())).get_all_for(user_id))
         for task in tasks:
-            rabbit_broker.publish(
-                TaskReadSchema.model_validate(task),
+            await rabbit_router.broker.publish(
+                TaskReadSchema.model_validate(task).model_dump(),
                 queue='task.user')
 
-    async def subscribe(self, user_id: UUID) -> Queue:
-        rabbit_broker.publish(user_id, queue='user.connected')
+    async def subscribe(self, user_id: str) -> Queue:
+        await rabbit_router.broker.publish(user_id, queue='user.connected')
+        await self.send_user_tasks(user_id)
         queue = Queue()
         self._queues[user_id].append(queue)
         return queue
 
-    async def unsubscribe(self, user_id: UUID, queue: Queue):
+    async def unsubscribe(self, user_id: str, queue: Queue):
         if user_id not in self._queues:
             return
         try:
@@ -36,16 +36,17 @@ class SSEManager:
         except ValueError:
             pass
         finally:
-            rabbit_broker.publish(user_id, queue='user.disconnected')
+            await rabbit_router.broker.publish(user_id,
+                                               queue='user.disconnected')
 
-    async def broadcast(self, user_id: UUID, task_id: int):
+    async def broadcast(self, user_id: str, task_id: int):
         if user_id not in self._queues:
             return
-        for queue in self._queues[user_id][:]:
-            try:
+        try:
+            for queue in self._queues[user_id][:]:
                 queue.put_nowait(task_id)
-            except Exception:
-                await self.unsubscribe(user_id, queue)
+        except Exception:
+            await self.unsubscribe(user_id, queue)
 
 
 sse_manager = SSEManager()

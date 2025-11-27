@@ -9,7 +9,7 @@ from data import User
 from configs.auth import current_active_user
 from services.sse_managers import sse_manager
 
-router = APIRouter(prefix='/sse')
+router = APIRouter(prefix='/v1/sse')
 
 
 @router.get('')

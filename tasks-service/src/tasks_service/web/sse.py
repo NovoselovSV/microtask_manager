@@ -1,20 +1,18 @@
 import json
 from asyncio import wait_for
-from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sse_starlette.sse import EventSourceResponse
-from users_service.data.users import User
+from tasks_service.services.users import UserService
 
-from configs.auth import current_active_user
 from services.sse_managers import sse_manager
 
-router = APIRouter(prefix='/sse')
+router = APIRouter(prefix='/v1/sse')
 
 
 @router.get('')
 async def sse_notifications(
-        user: Annotated[User, Depends(current_active_user)]):
+        user: UserService = Depends(UserService.get_current_user)):
     queue = await sse_manager.subscribe(user.id)
 
     async def event_generator():

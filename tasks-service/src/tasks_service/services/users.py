@@ -1,9 +1,9 @@
 import httpx
 import jwt
-from configs.settings import Settings
-from fastapi import Depends, Header, HTTPException, status
+from fastapi import Header, HTTPException, status
 
-from tasks_service.data.users_schemas import UserReadSchema
+from configs.settings import Settings
+from data.users_schemas import UserReadSchema
 
 settings = Settings()
 
@@ -18,20 +18,20 @@ class UserService:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 f'{settings.user_service.dsn}/me',
-                headers={'Authorization': f'Bearer {self.raw_token}'})
+                headers={'Authorization': self.raw_token})
             response.raise_for_status()
             return UserReadSchema(**response.json())
 
     @classmethod
     def get_current_user(
             cls,
-            authorization: str = Header(...)):
+            authorization: str = Header(..., alias='Auth')):
         return cls(authorization)
 
     @staticmethod
     async def get_user_info_before_logic(
-        user: 'UserService' = Depends(
-            get_current_user)):
+            authorization: str = Header(..., alias='Auth')):
+        user = UserService.get_current_user(authorization)
         return await user.get_info()
 
     @staticmethod
@@ -39,7 +39,7 @@ class UserService:
         try:
             token = token.split(' ')[1]
             user_id = jwt.decode(token, options={'verify_signature': False})
-            return user_id
+            return user_id.get('sub')
 
         except IndexError:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
