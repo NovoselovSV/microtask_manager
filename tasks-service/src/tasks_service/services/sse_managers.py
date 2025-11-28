@@ -1,27 +1,24 @@
 from asyncio import Queue
 from collections import defaultdict
 
-from data.tasks_schemas import TaskReadSchema
-from faststream_app import rabbit_router
 from p_database.db import get_db
-
+from .rabbit_service import RabbitService
 from .tasks import TaskService
 
 
 class SSEManager:
+
     def __init__(self):
         self._queues: dict[str, list[Queue]] = defaultdict(list)
-
-    async def send_user_tasks(self, user_id: str) -> None:
-        tasks = await (TaskService(await anext(get_db())).get_all_for(user_id))
-        for task in tasks:
-            await rabbit_router.broker.publish(
-                TaskReadSchema.model_validate(task).model_dump(),
-                queue='task.user')
+        self.rabbit_service = RabbitService()
 
     async def subscribe(self, user_id: str) -> Queue:
-        await rabbit_router.broker.publish(user_id, queue='user.connected')
-        await self.send_user_tasks(user_id)
+        await self.rabbit_service.send_user_connected(user_id)
+        await self.rabbit_service.send_user_tasks(
+            await (TaskService(
+                await anext(get_db())
+            ).get_all_for(user_id))
+        )
         queue = Queue()
         self._queues[user_id].append(queue)
         return queue
@@ -36,8 +33,7 @@ class SSEManager:
         except ValueError:
             pass
         finally:
-            await rabbit_router.broker.publish(user_id,
-                                               queue='user.disconnected')
+            await self.rabbit_service.send_user_disconnected(user_id)
 
     async def broadcast(self, user_id: str, task_id: int):
         if user_id not in self._queues:

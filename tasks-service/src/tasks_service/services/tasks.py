@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from data.tasks import Task
 from data.tasks_schemas import TaskCreateSchema, TaskEditSchema
+from services.rabbit_service import RabbitService
 from services.stmts import TaskStmt
 
 
@@ -46,13 +47,18 @@ class TaskService:
             creator_id=user_id)
         self.db.add(task)
         await self.db.commit()
+        await RabbitService().send_user_task(task)
         return task
 
     async def edit(self, task_id: int, task_data: TaskEditSchema):
         updated_values = task_data.model_dump(exclude_unset=True)
+        if 'final_dt' in updated_values:
+            updated_values['final_dt'] = updated_values['final_dt'].replace(
+                tzinfo=None)
         prev_state = await self.get_by_id(task_id)
         if not prev_state:
             return
+        prev_final_dt = prev_state.final_dt
         if task_data.done and prev_state.done != task_data.done:
             updated_values['done_dt'] = datetime.now()
         await self.db.execute(
@@ -61,6 +67,9 @@ class TaskService:
             .limit_by_id(task_id)
             .raw_stmt
             .values(**updated_values)
-            )
+        )
         await self.db.commit()
-        return await self.get_by_id(task_id)
+        current_state = await self.get_by_id(task_id)
+        if current_state.final_dt != prev_final_dt:
+            await RabbitService().send_task_update(current_state)
+        return current_state

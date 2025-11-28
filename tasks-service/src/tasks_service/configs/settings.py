@@ -47,6 +47,10 @@ class Settings(BaseSettings):
         env_nested_delimiter='__', env_prefix='TASKS')
 
     debug: bool = True
+    task_user_queue: str = 'task.user'
+    user_connected_queue: str = 'user.connected'
+    user_disconnected_queue: str = 'user.disconnected'
+    task_update_queue: str = 'task.update'
     user_service: UserServiceSettings() = UserServiceSettings()
     db: DBSettings = DBSettings()
     rabbit: RabbitSettings = RabbitSettings()
