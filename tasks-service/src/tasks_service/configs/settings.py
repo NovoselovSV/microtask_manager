@@ -44,7 +44,7 @@ class UserServiceSettings(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_nested_delimiter='__', env_prefix='TASKS')
+        env_nested_delimiter='__', env_prefix='TASKS_', env_file='.env')
 
     debug: bool = True
     task_user_queue: str = 'task.user'

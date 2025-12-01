@@ -18,7 +18,9 @@ class RabbitSettings(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_nested_delimiter='__', env_prefix='NOTIFICATIONS')
+        env_nested_delimiter='__',
+        env_prefix='NOTIFICATIONS_',
+        env_file='.env')
 
     debug: bool = True
     rabbit: RabbitSettings = RabbitSettings()

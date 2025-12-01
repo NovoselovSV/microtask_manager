@@ -34,7 +34,7 @@ class RabbitSettings(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_nested_delimiter='__', env_prefix='USERS')
+        env_nested_delimiter='__', env_prefix='USERS_', env_file='.env')
 
     debug: bool = True
     user_secret: str = 'SECRET'

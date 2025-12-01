@@ -47,6 +47,6 @@ async def edit_task(
         db: AsyncSession = Depends(get_db)
 ):
     tasks_service = TaskService(db)
-    if not tasks_service.is_task_belong_to_user(task_id, user.id):
+    if not await tasks_service.is_task_belong_to_user(task_id, user.id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return await TaskService(db).edit(task_id, task_data)
