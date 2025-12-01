@@ -55,12 +55,15 @@ cd path/to/repo/notifications-service/src/notifications_service
 faststream run faststream_app:faststream_app
 ```
 Сервисы будут доступны на:
+
 users: http://localhost:8000[/docs#/]
+
 tasks: http://localhost:8001[/docs#/]
 
 ## Примеры запросов к sse (httpie)
 
 users sse: http --stream :8000/users/v1/sse "Authorization: Bearer <token>"
+
 tasks sse: http --stream :8001/tasks/v1/sse "Auth: Bearer <token>"
 
 ## Использованные технологии
@@ -72,7 +75,7 @@ tasks sse: http --stream :8001/tasks/v1/sse "Auth: Bearer <token>"
 
 ## TODO
 - [x] Доделать Readme
-- [ ] Положить все в контейнеры и настроить докер компосе
+- [ ] Положить все в контейнеры и настроить docker compose
 - [ ] Создать фронт
 - [ ] Создать тесты
 
