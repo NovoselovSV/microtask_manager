@@ -1,0 +1,109 @@
+version: '3.3'
+
+volumes:
+  pg_data_users:
+  pg_data_tasks:
+
+services:
+  rabbit:
+    container_name: rabbit
+    image: rabbitmq:3.10.7-management
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+    env_file: 
+      - .env.users
+      - .env.tasks
+      - .env.notifications
+
+  db_users:
+    container_name: db_users-mt
+    image: postgres:16
+    env_file: .env.users
+    environment:
+      POSTGRES_DB: ${USERS_DB__NAME:-users}
+      POSTGRES_USER: ${USERS_DB__USERNAME:-general_user}
+      POSTGRES_PASSWORD: ${USERS_DB__PASSWORD:-general_user_pass}
+      DB_HOST: ${USERS_DB__HOST:-db_users}
+      DB_PORT: ${USERS_DB__PORT:-5432}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pg_data_users:/var/lib/postgresql/data
+
+  db_tasks:
+    container_name: db_tasks-mt
+    image: postgres:16
+    env_file: .env.tasks
+    environment:
+      POSTGRES_DB: ${TASKS_DB__NAME:-tasks}
+      POSTGRES_USER: ${TASKS_DB__USERNAME:-general_user}
+      POSTGRES_PASSWORD: ${TASKS_DB__PASSWORD:-general_user_pass}
+      DB_HOST: ${TASKS_DB__HOST:-db_tasks}
+      DB_PORT: ${TASKS_DB__PORT:-5432}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pg_data_tasks:/var/lib/postgresql/data
+
+  users-service:
+    container_name: users-mt
+    build: ../users-service/
+    env_file: .env.users
+    environment:
+      USERS_DB__HOST: ${USERS_DB__HOST:-db_users}
+      USERS_RABBIT__HOST: ${USERS_RABBIT__HOST:-rabbit}
+    depends_on:
+      db_users:
+          condition: service_healthy
+      rabbit:
+          condition: service_healthy
+
+  tasks-service:
+    container_name: tasks-mt
+    build: ../tasks-service/
+    env_file: .env.tasks
+    environment:
+      TASKS_DB__HOST: ${TASKS_DB__HOST:-db_tasks}
+      TASKS_RABBIT__HOST: ${TASKS_RABBIT__HOST:-rabbit}
+      TASKS_USER_SERVICE__HOST: ${TASKS_USER_SERVICE__HOST:-users-service}
+    depends_on:
+      users-service:
+          condition: service_started
+      db_tasks:
+          condition: service_healthy
+      rabbit:
+          condition: service_healthy
+
+  notifications-service:
+    container_name: notifications-mt
+    build: ../notifications-service/
+    env_file: .env.notifications
+    environment:
+      NOTIFICATIONS_RABBIT__HOST: ${TASKS_RABBIT__HOST:-rabbit}
+    depends_on:
+      tasks-service:
+          condition: service_started
+      rabbit:
+          condition: service_healthy
+
+  gateway:
+    container_name: gateway-mt
+    image: nginx:1.25.4-alpine
+    depends_on:
+      - users-service
+      - tasks-service
+      - notifications-service
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf

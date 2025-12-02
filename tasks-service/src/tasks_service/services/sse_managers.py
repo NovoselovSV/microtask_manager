@@ -14,11 +14,13 @@ class SSEManager:
 
     async def subscribe(self, user_id: str) -> Queue:
         await self.rabbit_service.send_user_connected(user_id)
-        await self.rabbit_service.send_user_tasks(
-            await (TaskService(
-                await anext(get_db())
-            ).get_all_for(user_id))
-        )
+        try:
+            db = await anext(get_db())
+            await self.rabbit_service.send_user_tasks(
+                await (TaskService(db).get_all_for(user_id))
+            )
+        finally:
+            await db.aclose()
         queue = Queue()
         self._queues[user_id].append(queue)
         return queue

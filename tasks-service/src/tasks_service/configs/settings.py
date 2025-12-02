@@ -33,12 +33,13 @@ class RabbitSettings(BaseModel):
 
 
 class UserServiceSettings(BaseModel):
-    host: str = 'localhost:8000'
+    host: str = 'localhost'
+    port: int = 8000
     version: str = 'v1'
 
     @property
     def dsn(self):
-        return (f'http://{self.host}/users/'
+        return (f'http://{self.host}:{self.port}/users/'
                 f'{self.version}')
 
 
@@ -51,6 +52,6 @@ class Settings(BaseSettings):
     user_connected_queue: str = 'user.connected'
     user_disconnected_queue: str = 'user.disconnected'
     task_update_queue: str = 'task.update'
-    user_service: UserServiceSettings() = UserServiceSettings()
+    user_service: UserServiceSettings = UserServiceSettings()
     db: DBSettings = DBSettings()
     rabbit: RabbitSettings = RabbitSettings()

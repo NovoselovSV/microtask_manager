@@ -3,7 +3,7 @@ from asyncio import wait_for
 
 from fastapi import APIRouter, Depends
 from sse_starlette.sse import EventSourceResponse
-from tasks_service.services.users import UserService
+from services.users import UserService
 
 from services.sse_managers import sse_manager
 

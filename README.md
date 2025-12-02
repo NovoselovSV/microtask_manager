@@ -60,11 +60,33 @@ users: http://localhost:8000[/docs#/]
 
 tasks: http://localhost:8001[/docs#/]
 
+### Запустить проект в контейнерах (через docker-compose)
+
+Перейти в папку с инфраструктурой и запустить docker-compose
+
+```bash
+cd path/to/repo/infra
+docker compose up [--build] [-d]
+```
+
+Если ранее не проводились миграции их надо провести на данном этапе (сервисы users и tasks).
+
+```bash
+docker compose exec users-service alembic upgrade head
+docker compose exec tasks-service alembic upgrade head
+```
+
+Сервисы будут доступны на:
+
+users: http://localhost/users[/docs#/]
+
+tasks: http://localhost/tasks[/docs#/]
+
 ## Примеры запросов к sse (httpie)
 
-users sse: http --stream :8000/users/v1/sse "Authorization: Bearer <token>"
+users sse: http --stream :[8000]/users/v1/sse "Authorization: Bearer <token>"
 
-tasks sse: http --stream :8001/tasks/v1/sse "Auth: Bearer <token>"
+tasks sse: http --stream :[8001]/tasks/v1/sse "Auth: Bearer <token>"
 
 ## Использованные технологии
 
@@ -75,7 +97,7 @@ tasks sse: http --stream :8001/tasks/v1/sse "Auth: Bearer <token>"
 
 ## TODO
 - [x] Доделать Readme
-- [ ] Положить все в контейнеры и настроить docker compose
+- [x] Положить все в контейнеры и настроить docker compose
 - [ ] Создать фронт
 - [ ] Создать тесты
 
