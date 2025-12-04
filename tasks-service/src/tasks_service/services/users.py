@@ -25,12 +25,12 @@ class UserService:
     @classmethod
     def get_current_user(
             cls,
-            authorization: str = Header(..., alias='Auth')):
+            authorization: str = Header(...)):
         return cls(authorization)
 
     @staticmethod
     async def get_user_info_before_logic(
-            authorization: str = Header(..., alias='Auth')):
+            authorization: str = Header(...)):
         user = UserService.get_current_user(authorization)
         return await user.get_info()
 

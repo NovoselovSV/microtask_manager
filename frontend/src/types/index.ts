@@ -12,4 +12,10 @@ export interface Todo {
 export interface User {
   id: uuidv4;
   email: string;
+  token: string;
+}
+
+export interface TokenMsg {
+  access_token: string;
+  token_type: string;
 }

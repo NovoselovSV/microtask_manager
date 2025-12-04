@@ -8,7 +8,7 @@ export const TodoList = () => {
   const completedCount = todos.filter((t) => t.completed).length;
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg shadow">
+    <div className="w-full bg-white rounded-lg shadow">
       <div className="p-4">
         {todos.length === 0 ? (
           <p className="text-gray-500 text-center py-4">Нет задач</p>
