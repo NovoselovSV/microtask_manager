@@ -30,7 +30,7 @@ export const TodoItem = ({ todo }: TodoItemProps) => {
             <input
               type="checkbox"
               checked={todo.done}
-              onChange={() => toggleTodo(todo.id)}
+              onChange={async () => await toggleTodo(todo.id)}
               className="h-5 w-5 mt-1 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
             />
             <div className="ml-3">

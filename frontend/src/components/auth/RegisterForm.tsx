@@ -44,7 +44,7 @@ export const RegisterForm = () => {
     setError('');
     
     try {
-      const success = register(email, password);
+      const success = await register(email, password);
       
       if (success) {
         setSuccess('Аккаунт успешно создан! Выполняется вход...');

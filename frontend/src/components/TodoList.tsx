@@ -1,11 +1,29 @@
+import { useEffect, useState } from 'react';
 import { useTodoStore } from '../store/useTodoStore';
 import { TodoItem } from './TodoItem';
 
 export const TodoList = () => {
+  const gettingTodos = useTodoStore((state) => state.gettingTodos);
+  const [isGetting, setIsGetting] = useState(true);
   const todos = useTodoStore((state) => state.todos);
   const clearCompleted = useTodoStore((state) => state.clearCompleted);
 
   const completedCount = todos.filter((t) => t.completed).length;
+  useEffect(() => {
+    const getTodos = async () => {
+      await gettingTodos();
+      setIsGetting(false);
+    }
+    getTodos();
+  }, [gettingTodos]);
+  if (isGetting) {
+    return (
+      <div className="w-full bg-white rounded-lg shadow">
+        <div className="p-4">
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white rounded-lg shadow">
@@ -13,7 +31,7 @@ export const TodoList = () => {
         {todos.length === 0 ? (
           <p className="text-gray-500 text-center py-4">Нет задач</p>
         ) : (
-          todos.map((todo) => <TodoItem key={todo.description/*TODO change to id*/} todo={todo} />)
+          todos.map((todo) => <TodoItem key={todo.id} todo={todo} />)
         )}
       </div>
 

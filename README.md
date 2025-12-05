@@ -86,7 +86,7 @@ tasks: http://localhost/tasks[/docs#/]
 
 users sse: http --stream :[8000]/users/v1/sse "Authorization: Bearer <token>"
 
-tasks sse: http --stream :[8001]/tasks/v1/sse "Auth: Bearer <token>"
+tasks sse: http --stream :[8001]/tasks/v1/sse "Authorization: Bearer <token>"
 
 ## Использованные технологии
 

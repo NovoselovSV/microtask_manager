@@ -6,7 +6,7 @@ export const TodoInput = () => {
   const [finalDate, setFinalDate] = useState('');
   const addTodo = useTodoStore((state) => state.addTodo);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim() || !finalDate) {
       alert('Пожалуйста, заполните текст задачи и дату окончания');
@@ -18,7 +18,7 @@ export const TodoInput = () => {
       return;
     }
 
-    addTodo(description, finalDate);
+    await addTodo(description, finalDate);
     setDescription('');
     setFinalDate('');
   };

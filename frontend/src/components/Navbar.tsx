@@ -2,10 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 
 export const Navbar = () => {
-  const currentUser = useAuthStore((state) => state.currentUser);
+  const currentUser = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 
-  // Если пользователь не авторизован, не показываем навбар
   if (!currentUser) {
     return null;
   }
