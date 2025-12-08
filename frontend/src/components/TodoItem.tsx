@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react';
 import { Todo } from '../types';
 import { useTodoStore } from '../store/useTodoStore';
+import { useSseConnection } from '../api/sseClient';
 
 interface TodoItemProps {
   todo: Todo;
 }
 
 export const TodoItem = ({ todo }: TodoItemProps) => {
+  const [isHighlighted, setIsHighlighted] = useState(false);
   const toggleTodo = useTodoStore((state) => state.toggleTodo);
   const formatDate = (date: Date | undefined | null) => {
     if (!date) return '—';
@@ -22,9 +25,42 @@ export const TodoItem = ({ todo }: TodoItemProps) => {
       hour12: false,
     });
   };
+  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/tasks/v1/sse`
+  const todosEndConnection = useSseConnection(
+    url,
+    'todos-end-connection'
+  );
+  const triggerHighlight = () => {
+    setIsHighlighted(false);
+    
+    setTimeout(() => {
+      setIsHighlighted(true);
+      
+      setTimeout(() => {
+        setIsHighlighted(false);
+      }, 2000);
+    }, 50);
+  };
+  useEffect(() => {
+    const unsubTodos = todosEndConnection.subscribe('*', (message) => {
+      console.log('Время задачи вышло', message.payload);
+      triggerHighlight();
+    });
+    
+    
+    const unsubErrorTodos = todosEndConnection.onError((error) => {
+      console.error('Ошибка окончания времени задачи:', error);
+    });
+    
+    
+    return () => {
+      unsubTodos();
+      unsubErrorTodos();
+    };
+  }, [todosEndConnection]);
 
   return (
-    <div className="flex items-center justify-between p-3 border-b border-gray-200">
+    <div className={`flex items-center justify-between p-3 border-b ${isHighlighted ? "bg-red-100 border-red-300 animate-pulse" : "border-gray-200"}`}>
       <div className="flex-1 mr-3">
           <label className="flex items-start cursor-pointer">
             <input

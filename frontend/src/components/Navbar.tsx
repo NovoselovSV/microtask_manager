@@ -1,13 +1,44 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { useSseConnection } from '../api/sseClient';
 
 export const Navbar = () => {
   const currentUser = useAuthStore((state) => state.user);
+  const updateUser = useAuthStore((state) => state.update);
   const navigate = useNavigate();
 
   if (!currentUser) {
     return null;
   }
+  const [email, setEmail] = useState(currentUser.email);
+  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/users/v1/sse`
+  const userConnection = useSseConnection(
+    url,
+    'user-connection'
+  );
+  useEffect(() => {
+    const unsubUser = userConnection.subscribe('*', (message) => {
+      console.log('Изменилась информация о пользователе', message.payload);
+      const updationUser = async () => {
+        await updateUser();
+        setEmail(message.payload.email);
+      };
+      updationUser();
+      
+    });
+    
+    
+    const unsubErrorUser = userConnection.onError((error) => {
+      console.error('Ошибка обновления пользователя:', error);
+    });
+    
+    
+    return () => {
+      unsubUser();
+      unsubErrorUser();
+    };
+  }, [userConnection, updateUser]);
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -31,7 +62,7 @@ export const Navbar = () => {
                 to="/profile" 
                 className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
-                <span className="text-gray-700 font-medium">{currentUser.email}</span>
+                <span className="text-gray-700 font-medium">{email}</span>
               </Link>
             </div>
             

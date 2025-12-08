@@ -7,6 +7,7 @@ interface AuthState {
   user: User | null;
   login: (email: string, password: string) => boolean;
   isTokenCorrect: () => boolean;
+  update: () => boolean;
   logout: () => void;
   register: (email: string, password: string) => boolean;
 }
@@ -40,6 +41,9 @@ export const useAuthStore = create<AuthState>()(
       },
       
       logout: () => set({ user: null }),
+      update: async () => {
+        return await get().isTokenCorrect();
+      },
       isTokenCorrect: async () => {
         const token = get().user?.token;
         if (!token) {
