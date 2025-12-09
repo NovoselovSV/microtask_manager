@@ -19,7 +19,6 @@ export const Navbar = () => {
   );
   useEffect(() => {
     const unsubUser = userConnection.subscribe('*', (message) => {
-      console.log('Изменилась информация о пользователе', message.payload);
       const updationUser = async () => {
         await updateUser();
         setEmail(message.payload.email);

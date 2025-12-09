@@ -1,7 +1,9 @@
+import json
 from asyncio import Queue
 from collections import defaultdict
 
 from p_database.db import get_db
+
 from .rabbit_service import RabbitService
 from .tasks import TaskService
 
@@ -42,7 +44,7 @@ class SSEManager:
             return
         try:
             for queue in self._queues[user_id][:]:
-                queue.put_nowait(task_id)
+                queue.put_nowait(json.dumps(task_id))
         except Exception:
             await self.unsubscribe(user_id, queue)
 

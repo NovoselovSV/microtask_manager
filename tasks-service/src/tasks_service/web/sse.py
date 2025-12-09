@@ -20,10 +20,7 @@ async def sse_notifications(
             while True:
                 try:
                     data = await wait_for(queue.get(), timeout=30.0)
-                    yield {
-                        'event': 'notification',
-                        'data': json.dumps(data, ensure_ascii=False)
-                    }
+                    yield json.dumps(data, ensure_ascii=False)
                 except TimeoutError:
                     yield {'data': ''}
         finally:

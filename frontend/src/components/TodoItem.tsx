@@ -43,7 +43,9 @@ export const TodoItem = ({ todo }: TodoItemProps) => {
   };
   useEffect(() => {
     const unsubTodos = todosEndConnection.subscribe('*', (message) => {
-      console.log('Время задачи вышло', message.payload);
+      if (message.payload !== todo.id.toString()) {
+        return;
+      }
       triggerHighlight();
     });
     

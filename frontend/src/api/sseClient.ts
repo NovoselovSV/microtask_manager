@@ -26,7 +26,7 @@ class SseManager {
   createConnection(url: string, connectionId: string): SseConnection {
     this.closeConnection(connectionId);
     
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMmMzN2RhZC1iZjI2LTRiMTYtOWJkMS1mODdkYzlhZTRkN2EiLCJhdWQiOlsiZmFzdGFwaS11c2VyczphdXRoIl0sImV4cCI6MTc2NTIxOTI1Nn0.R7eoiay_Iqdw8T8x6ViT-xQbDyYgACH91L5yxHVPfSE';
+    const token = this.authStore.getState().user.token;
     const headers: Record<string, string> = {};
     
     if (token) {
@@ -34,7 +34,6 @@ class SseManager {
     }
     
     const eventSource = new EventSourcePolyfill(url, {headers: headers});
-    console.log(eventSource);
     
     const connection: SseConnection = {
       eventSource,
@@ -44,14 +43,12 @@ class SseManager {
       close: () => {
         if (eventSource) {
           eventSource.close();
-          console.log(`CloseOperation SSE соединение "${connectionId}" закрыто`);
         }
         this.connections.delete(connectionId);
       }
     };
     
     eventSource.onmessage = (event) => {
-      console.log(event);
       if (!event.data) {
         return;
       }
@@ -87,7 +84,6 @@ class SseManager {
     };
     
     eventSource.onopen = () => {
-      console.log(`SSE соединение "${connectionId}" установлено`);
     };
     
     this.connections.set(connectionId, connection);
