@@ -54,11 +54,6 @@ notifications
 cd path/to/repo/notifications-service/src/notifications_service
 faststream run faststream_app:faststream_app
 ```
-Сервисы будут доступны на:
-
-users: http://localhost:8000[/docs#/]
-
-tasks: http://localhost:8001[/docs#/]
 
 ### Запустить проект в контейнерах (через docker-compose)
 
@@ -76,17 +71,21 @@ docker compose exec users-service alembic upgrade head
 docker compose exec tasks-service alembic upgrade head
 ```
 
-Сервисы будут доступны на:
+Backend сервисы будут доступны на:
 
-users: http://localhost/users[/docs#/]
+users: http://localhost/api/users[/docs#/]
 
-tasks: http://localhost/tasks[/docs#/]
+tasks: http://localhost/api/tasks[/docs#/]
+
+Весь проект:
+
+http://localhost
 
 ## Примеры запросов к sse (httpie)
 
-users sse: http --stream :[8000]/users/v1/sse "Authorization: Bearer <token>"
+users sse: http --stream :[8000]/api/users/v1/sse "Authorization: Bearer <token>"
 
-tasks sse: http --stream :[8001]/tasks/v1/sse "Authorization: Bearer <token>"
+tasks sse: http --stream :[8001]/api/tasks/v1/sse "Authorization: Bearer <token>"
 
 ## Использованные технологии
 
@@ -94,11 +93,13 @@ tasks sse: http --stream :[8001]/tasks/v1/sse "Authorization: Bearer <token>"
  2. SQLAlchemy
  3. Alembic
  4. Faststream
+ 5. Vite
+ 6. React
 
 ## TODO
 - [x] Доделать Readme
 - [x] Положить все в контейнеры и настроить docker compose
-- [ ] Создать фронт
+- [x] Создать фронт
 - [ ] Создать тесты
 
 ## Автор

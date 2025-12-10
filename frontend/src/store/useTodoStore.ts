@@ -18,17 +18,17 @@ export const useTodoStore = create<TodoState>()(
       todos: [],
 
       gettingTodos: async () => {
-        const response_todos = await api.get('/tasks/v1');
+        const response_todos = await api.get('/api/tasks/v1');
         set({ todos: response_todos.data.map((todoArrived) => ({ finalDate: todoArrived.final_dt, id: todoArrived.id, description: todoArrived.description, done: todoArrived.done, doneDate: todoArrived.done_dt, createdAt: todoArrived.created_at }))});
       },
       addTodo: async (description, finalDate) => {
-        const response_creation = await api.post('/tasks/v1', { description: description, final_dt: finalDate });
+        const response_creation = await api.post('/api/tasks/v1', { description: description, final_dt: finalDate });
         await get().gettingTodos();
       },
 
       toggleTodo: async (id) => {
         const state = get()
-        const response_toggling = await api.patch(`/tasks/v1/${id}`, { done: !state.todos.find((t) => t.id === id)?.done });
+        const response_toggling = await api.patch(`/api/tasks/v1/${id}`, { done: !state.todos.find((t) => t.id === id)?.done });
         await state.gettingTodos();
       },
 

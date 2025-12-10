@@ -18,7 +18,7 @@ settings = Settings()
 
 SECRET = settings.user_secret
 
-bearer_transport = BearerTransport(tokenUrl='users/v1/auth/login')
+bearer_transport = BearerTransport(tokenUrl='api/users/v1/auth/login')
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):

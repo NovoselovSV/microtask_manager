@@ -25,7 +25,7 @@ export const TodoItem = ({ todo }: TodoItemProps) => {
       hour12: false,
     });
   };
-  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/tasks/v1/sse`
+  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/api/tasks/v1/sse`
   const todosEndConnection = useSseConnection(
     url,
     'todos-end-connection'

@@ -39,7 +39,7 @@ class UserServiceSettings(BaseModel):
 
     @property
     def dsn(self):
-        return (f'http://{self.host}:{self.port}/users/'
+        return (f'http://{self.host}:{self.port}/api/users/'
                 f'{self.version}')
 
 

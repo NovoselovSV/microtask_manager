@@ -12,7 +12,7 @@ export const Navbar = () => {
     return null;
   }
   const [email, setEmail] = useState(currentUser.email);
-  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/users/v1/sse`
+  const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/api/users/v1/sse`
   const userConnection = useSseConnection(
     url,
     'user-connection'

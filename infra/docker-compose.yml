@@ -3,8 +3,17 @@ version: '3.3'
 volumes:
   pg_data_users:
   pg_data_tasks:
+  static:
 
 services:
+
+  frontend:
+    container_name: frontend-mt
+    build: ../frontend/
+    command: cp -r /app/dist/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+
   rabbit:
     container_name: rabbit
     image: rabbitmq:3.10.7-management
@@ -103,7 +112,9 @@ services:
       - users-service
       - tasks-service
       - notifications-service
+      - frontend
     ports:
       - 80:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - static:/usr/share/nginx/html/

@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
     yield
     await rabbit_router.broker.close()
 
-app = FastAPI(debug=settings.debug, root_path='/tasks', lifespan=lifespan)
+app = FastAPI(debug=settings.debug, root_path='/api/tasks', lifespan=lifespan)
 
 origins = [
     'http://localhost',

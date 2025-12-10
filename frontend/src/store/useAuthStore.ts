@@ -24,13 +24,13 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           if (!token) {
-           const response_token = await api.postForm<TokenMsg>('/users/v1/auth/login', 
+           const response_token = await api.postForm<TokenMsg>('/api/users/v1/auth/login', 
                                                    {username: email, password: password}
                                                    );
            token = response_token.data.access_token;
           }
 
-          const response_user = await api.get<User>('/users/v1/me', { headers: { Authorization: `Bearer ${token}`}});
+          const response_user = await api.get<User>('/api/users/v1/me', { headers: { Authorization: `Bearer ${token}`}});
           set({ user: { id: response_user.data.id, email: response_user.data.email, token: token } });
 
         } catch {
@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>()(
           return false;
         }
         try {
-          const response_user = await api.get<User>('/users/v1/me');
+          const response_user = await api.get<User>('/api/users/v1/me');
           set({ user: { id: response_user.data.id, email: response_user.data.email, token: token } });
         } catch {
           return false;
@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>()(
       },
       
       register: async (email, password) => {
-        const response_register = await api.post<User>('/users/v1/auth/register', { email: email, password: password })
+        const response_register = await api.post<User>('/api/users/v1/auth/register', { email: email, password: password })
         
         set({ user: { id: response_register.data.id, email: response_register.data.email } });
         return true;
