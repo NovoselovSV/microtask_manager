@@ -11,3 +11,4 @@ __pycache__
 .pre-commit-config.yaml
 .pytest_cache
 .venv
+**/tests/
