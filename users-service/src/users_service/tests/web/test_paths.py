@@ -1,6 +1,6 @@
 import pytest
 
-from tests.constants import BASE_API_VERSION, BASE_URL
+from tests.constants import BASE_API_VERSION, BASE_URL, USER_UPDATE_QUEUE
 from faststream_app import rabbit_router
 
 
@@ -24,7 +24,7 @@ def test_endpoints_existence(url, method, test_client):
 
 @pytest.mark.parametrize(
     'topic', (
-        ('user.update',)
+        (USER_UPDATE_QUEUE,)
     )
 )
 def test_faststream_topics_existence(topic):
@@ -35,4 +35,4 @@ def test_faststream_topics_existence(topic):
 
 
 def test_root_path(test_client):
-    assert test_client.app.root_path == '/api/users'
+    assert test_client.app.root_path == BASE_URL

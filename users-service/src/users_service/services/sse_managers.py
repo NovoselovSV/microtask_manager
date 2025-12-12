@@ -6,6 +6,7 @@ from data.users_schemas import UserReadSchema
 
 
 class SSEManager:
+
     def __init__(self):
         self._queues: dict[UUID, list[Queue]] = defaultdict(list)
 
