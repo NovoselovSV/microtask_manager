@@ -1,15 +1,13 @@
 import asyncio
 
-from data.tasks_schemas import TaskEditSchema
-from data.users_schemas import UserReadSchema
-
-from data.tasks_schemas import TaskCreateSchema, TaskReadSchema
 from fastapi import APIRouter, Depends, HTTPException, status
-from p_database.db import get_db
-from services.users import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from data.tasks_schemas import TaskCreateSchema, TaskEditSchema, TaskReadSchema
+from data.users_schemas import UserReadSchema
+from p_database.db import get_db
 from services.tasks import TaskService
+from services.users import UserService
 
 router = APIRouter(prefix='/v1')
 
