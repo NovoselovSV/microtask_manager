@@ -1162,6 +1162,40 @@ docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1)"]
 testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
 
 [[package]]
+name = "pytest-httpx"
+version = "0.36.0"
+description = "Send responses to httpx."
+optional = false
+python-versions = ">=3.10"
+groups = ["test"]
+files = [
+    {file = "pytest_httpx-0.36.0-py3-none-any.whl", hash = "sha256:bd4c120bb80e142df856e825ec9f17981effb84d159f9fa29ed97e2357c3a9c8"},
+    {file = "pytest_httpx-0.36.0.tar.gz", hash = "sha256:9edb66a5fd4388ce3c343189bc67e7e1cb50b07c2e3fc83b97d511975e8a831b"},
+]
+
+[package.dependencies]
+httpx = "==0.28.*"
+pytest = "==9.*"
+
+[package.extras]
+testing = ["pytest-asyncio (==1.*)", "pytest-cov (==7.*)"]
+
+[[package]]
+name = "pytest-lazy-fixtures"
+version = "1.4.0"
+description = "Allows you to use fixtures in @pytest.mark.parametrize."
+optional = false
+python-versions = ">=3.8"
+groups = ["test"]
+files = [
+    {file = "pytest_lazy_fixtures-1.4.0-py3-none-any.whl", hash = "sha256:c5db4506fa0ade5887189d1a18857fec4c329b4f49043fef6732c67c9553389a"},
+    {file = "pytest_lazy_fixtures-1.4.0.tar.gz", hash = "sha256:f544b60c96b909b307558a62cc1f28f026f11e9f03d7f583a1dc636de3dbcb10"},
+]
+
+[package.dependencies]
+pytest = ">=7"
+
+[[package]]
 name = "pytest-mock"
 version = "3.15.1"
 description = "Thin-wrapper around the mock package for easier use with pytest"

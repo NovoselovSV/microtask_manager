@@ -4,12 +4,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.routing import _DefaultLifespan
 
-from data.tasks_schemas import TaskReadSchema, TaskCreateSchema, TaskEditSchema
+from configs.settings import Settings
+from data.tasks import Task
+from data.tasks_schemas import TaskCreateSchema, TaskEditSchema, TaskReadSchema
 from data.users_schemas import UserReadSchema
 from main import app
 from p_database.db import get_db
 from services.users import UserService
-from tests.constants import FIRST_TASK_FIRST_USER_DATA, FIRST_USER_DATA
+from tests.constants import (FIRST_TASK_FIRST_USER_DATA, FIRST_USER_DATA,
+                             SECOND_USER_DATA)
 
 
 @pytest.fixture
@@ -41,6 +44,30 @@ def test_task_edit_schema():
 def test_user_read_schema():
     return UserReadSchema(
         **FIRST_USER_DATA)
+
+
+@pytest.fixture
+def test_second_user_read_schema():
+    return UserReadSchema(
+        **SECOND_USER_DATA)
+
+
+@pytest.fixture
+def test_first_task_first_user():
+    return Task(
+        **FIRST_TASK_FIRST_USER_DATA)
+
+
+@pytest.fixture
+def settings():
+    return Settings()
+
+
+@pytest.fixture
+def fake_db(mocker):
+    mock_db = mocker.MagicMock(spec=AsyncSession)
+    mock_db.execute = mocker.AsyncMock()
+    return mock_db
 
 
 @pytest.fixture

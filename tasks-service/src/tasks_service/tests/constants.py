@@ -8,6 +8,10 @@ FIRST_USER_DATA_ID = UUID('{12345678-1234-5678-1234-567812345678}')
 FIRST_USER_DATA = {
     'id': FIRST_USER_DATA_ID,
     'is_active': True}
+SECOND_USER_DATA_ID = UUID('{87654321-4321-8765-4321-876543218765}')
+SECOND_USER_DATA = {
+    'id': FIRST_USER_DATA_ID,
+    'is_active': True}
 FIRST_TASK_FIRST_USER_DATA = {
     'id': 1,
     'created_at': datetime(2025, 1, 1, 12, 0),
