@@ -47,6 +47,22 @@ def test_user_read_schema():
 
 
 @pytest.fixture
+def sql_value_formatter():
+    def format_value(value):
+        if value is None:
+            return 'null'
+        elif isinstance(value, bool):
+            return str(value).lower()
+        elif isinstance(value, (int, float)):
+            return str(value)
+        elif isinstance(value, str):
+            return f"'{value}'"
+        else:
+            return f"'{str(value)}'"
+    return format_value
+
+
+@pytest.fixture
 def test_second_user_read_schema():
     return UserReadSchema(
         **SECOND_USER_DATA)

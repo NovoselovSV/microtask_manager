@@ -34,11 +34,11 @@ class TaskStmt(Stmt):
         super().__init__(Task)
 
     def limit_by_creator(self, user_id: UUID):
-        self._stmt = self._stmt.where(Task.creator_id == user_id)
+        self._stmt = self._stmt.where(self._model.creator_id == user_id)
         return self
 
     def limit_by_id(self, id: int):
-        self._stmt = self._stmt.where(Task.id == id)
+        self._stmt = self._stmt.where(self._model.id == id)
         return self
 
     def limit_to_one_for_user(self, id: int, user_id: UUID):
