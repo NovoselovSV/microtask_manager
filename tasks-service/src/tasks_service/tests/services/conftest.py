@@ -1,6 +1,8 @@
 import jwt
 import pytest
 
+from services.sse_managers import sse_manager
+
 
 @pytest.fixture
 def valid_token(test_user_read_schema):
@@ -78,4 +80,39 @@ def prepare_tasks_is_task_belong_to_user_objects(
             test_first_task_first_user)
         fake_db.execute.return_value = result_execute
         return {'fake_db': fake_db, 'result_execute': result_execute}
+    return prepare_default
+
+
+@pytest.fixture
+def test_sse_manager():
+    yield sse_manager
+    sse_manager._queues.clear()
+
+
+@pytest.fixture
+def prepare_sse_manager_subscribtion_objects(
+        mocker, test_first_task_first_user):
+    def prepare_default():
+        send_user_connected_mock = mocker.patch(
+            'services.rabbit_service.RabbitService.send_user_connected')
+        send_user_tasks_mock = mocker.patch(
+            'services.rabbit_service.RabbitService.send_user_tasks')
+        get_db_mock = mocker.patch('p_database.db.get_db')
+        get_all_for_mock = mocker.patch(
+            'services.tasks.TaskService.get_all_for')
+        return {
+            'send_user_connected_mock': send_user_connected_mock,
+            'send_user_tasks_mock': send_user_tasks_mock,
+            'get_db_mock': get_db_mock,
+            'get_all_for_mock': get_all_for_mock}
+    return prepare_default
+
+
+@pytest.fixture
+def prepare_rabbit_service_publish_objects(mocker):
+    def prepare_default():
+        publish_mock = mocker.patch('services.rabbit_service.RabbitService.publish')
+        return {
+            'publish_mock': publish_mock,
+        }
     return prepare_default

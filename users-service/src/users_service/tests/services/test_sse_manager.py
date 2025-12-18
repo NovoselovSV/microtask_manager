@@ -1,5 +1,4 @@
 from asyncio.coroutines import inspect
-from asyncio import Queue
 
 import pytest
 

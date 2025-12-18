@@ -101,6 +101,8 @@ tasks sse: http --stream :[8001]/api/tasks/v1/sse "Authorization: Bearer <token>
 - [x] Положить все в контейнеры и настроить docker compose
 - [x] Создать фронт
 - [ ] Создать тесты
+- [ ] Добавить виджет с pytest-cov
+- [ ] Поправить фронт
 
 ## Автор
 [Новоселов Сергей](https://github.com/NovoselovSV)

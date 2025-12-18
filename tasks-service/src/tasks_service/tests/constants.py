@@ -10,7 +10,7 @@ FIRST_USER_DATA = {
     'is_active': True}
 SECOND_USER_DATA_ID = UUID('{87654321-4321-8765-4321-876543218765}')
 SECOND_USER_DATA = {
-    'id': FIRST_USER_DATA_ID,
+    'id': SECOND_USER_DATA_ID,
     'is_active': True}
 FIRST_TASK_FIRST_USER_DATA = {
     'id': 1,

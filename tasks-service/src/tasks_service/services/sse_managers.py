@@ -34,10 +34,9 @@ class SSEManager:
             self._queues[user_id].remove(queue)
             if not self._queues[user_id]:
                 del self._queues[user_id]
+                await self.rabbit_service.send_user_disconnected(user_id)
         except ValueError:
             pass
-        finally:
-            await self.rabbit_service.send_user_disconnected(user_id)
 
     async def broadcast(self, user_id: str, task_id: int):
         if user_id not in self._queues:
