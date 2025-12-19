@@ -62,7 +62,6 @@ class UserTaskService:
         )
 
     async def broadcast_finish_job(self, user_id: str, task_id: int):
-        print('end')
         await rabbit_broker.publish(
             {'user_id': user_id, 'task_id': task_id}, queue='task.end')
         self._connected_users[user_id].remove(str(task_id))

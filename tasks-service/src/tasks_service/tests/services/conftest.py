@@ -111,7 +111,8 @@ def prepare_sse_manager_subscribtion_objects(
 @pytest.fixture
 def prepare_rabbit_service_publish_objects(mocker):
     def prepare_default():
-        publish_mock = mocker.patch('services.rabbit_service.RabbitService.publish')
+        publish_mock = mocker.patch(
+            'services.rabbit_service.RabbitService.publish')
         return {
             'publish_mock': publish_mock,
         }
