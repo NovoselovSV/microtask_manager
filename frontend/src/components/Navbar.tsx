@@ -6,17 +6,19 @@ import { useSseConnection } from '../api/sseClient';
 export const Navbar = () => {
   const currentUser = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.update);
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
-  if (!currentUser) {
-    return null;
-  }
-  const [email, setEmail] = useState(currentUser.email);
   const url = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost'}/api/users/v1/sse`
   const userConnection = useSseConnection(
     url,
     'user-connection'
   );
+  useEffect(() => {
+    if (currentUser) {
+      setEmail(currentUser.email);
+    }
+  }, [currentUser]);
   useEffect(() => {
     const unsubUser = userConnection.subscribe('*', (message) => {
       const updationUser = async () => {
@@ -39,6 +41,9 @@ export const Navbar = () => {
     };
   }, [userConnection, updateUser]);
 
+  if (!currentUser) {
+    return null;
+  }
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

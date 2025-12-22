@@ -26,12 +26,13 @@ class SseManager {
   createConnection(url: string, connectionId: string): SseConnection {
     this.closeConnection(connectionId);
     
-    const token = this.authStore.getState().user.token;
+    const token = this.authStore.getState().user?.token;
     const headers: Record<string, string> = {};
     
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    if (!token) {
+      return;
     }
+    headers['Authorization'] = `Bearer ${token}`;
     
     const eventSource = new EventSourcePolyfill(url, {headers: headers});
     
